@@ -29,7 +29,7 @@ The dataset can be accessed on Kaggle via this [link](https://www.kaggle.com/dat
 
 - First I created a table into which I can import the dataset.
 
-```
+```sql
 create schema cohort_analysis;
 set search_path to cohort_analysis;
 create table retail (
@@ -48,7 +48,7 @@ create table retail (
 
 - Now that the data has been imported  let's select all the columns and inspect our records.
 
-```
+```sql
 select * 
 	from retail
          	limit 10;
@@ -73,7 +73,7 @@ The dataset comprises of 10,83,818 rows and 8 columns.There are a number of miss
 
 - Filter the resultset to exclude records where the customerID is blank. 
 
-```
+```sql
 select *
 	from retail
 	where customerid is not null; --8,13,658
@@ -88,7 +88,7 @@ The filtered result set contains 8,13,658 records. In order to narrow the focus 
 
 - Checking for Duplicate Rows.Utilizing Common Table Expressions (CTE's), and apply a query to filter for the relevant records and Passing the  clean data to a temporary table	.
 
-```  
+```sql  
 -- Create a Common Table Expression (CTE) to filter and check for duplicates
 drop table if exists retail_clean;
 
@@ -137,7 +137,7 @@ With the data now cleaned and stored in a temporary table, it can be easily acce
 
 ------------------------------------------------------ 
 - Now we can proceed to conduct Cohort Analysis
-``` 
+```sql 
 --The unique identifier (CustomerID) will be obtained and linked to the date of the first purchase (First Invoice Date).
 --Pass data into a temp table (cohort)
 drop table if exists cohort;
@@ -169,7 +169,7 @@ In the initial cohort analysis, we’ll first identify each customer by their un
 
 - Now I will calculate Cohort Index.A cohort index is an integer representation of the number of months that has passed since a customer's first engagement.
 
-```
+```sql
 --Join the retail_clean and cohort tables on CustomerID. 
 --Retrieve the invoice dates and the cohort dates from each table
 --Common Table Expression (CTE) to join online_retail_clean and cohort tables on CustomerID
@@ -225,7 +225,7 @@ This formula converts the year_diff into months, adds the month_diff, and adds 1
 
 - Now that I have the cohort index number, the next step is to use the temporary table to create a pivot table. This temporary pivot table will display cohort retention across different levels for further analysis.
 
-```
+```sql
 -- Cohort analysis on customer level
 create extension if not exists tablefunc;
 
@@ -267,7 +267,7 @@ from crosstab(
 
 - Now using the above cohort_pivot1 table I will conduct cohort retention on customer level.
 
-```
+```sql
 --the following code will show customer count per month
 
 select
@@ -296,7 +296,7 @@ The resulting table provides insight on the number of customers who have continu
 ------------------------------------------------------
 
 - Using the above cohort_pivot1 table I will now show the retention rate on customer level
-```
+```sql
 --the following code will show retentation rate
 select
     cohort_date,
@@ -324,7 +324,7 @@ The resulting table provides insight on the retention rate of customers who have
 ------------------------------------------------------
 
 - Now I will conduct churned Cuatomer count  per month using cohort_pivot1 table
-```
+```sql
 -- the following code will show customer churn count by customer count
 
 select
@@ -355,7 +355,7 @@ The resulting table provides insight on the number of customers who have stopped
 ------------------------------------------------------
 
 - Now I will conduct churned Cuatomer Rate per month using cohort_pivot1 table
-```
+```sql
 -- the following code will show customer churn rate per month
 -- abs(cohort_n - cohort_(n+1)) / cohort_n * 100 to give the churn rate per cohort.
 select cohort_date,
@@ -383,7 +383,7 @@ The resulting table provides insight on the Churn Rate of customers who have sto
 ------------------------------------------------------
 
 - Next, I will perform cohort analysis based on revenue. To do this, I’ll adjust the pivot table so that the columns display revenue figures for each cohort.
-``` 
+```sql 
 drop table if exists cohort_pivot2;
 
 create temporary table cohort_pivot2 as 
@@ -420,7 +420,7 @@ from crosstab(
 ------------------------------------------------------
 
 - Now I will calculate cohort retention on revenue level using cohort_pivot2 table
-```
+```sql
 -- the following code will show cohort retentation on revenue levels
 select
     cohort_date,
@@ -450,7 +450,7 @@ The resulting table provides insight about retention on Revenue level .
 
 - Next, I will perform cohort analysis based on order. To do this, I’ll adjust the pivot table so that the columns display revenue figures for each cohort.
 
-```
+```sql
 drop table if exists cohort_pivot3
 
 create temporary table cohort_pivot3 as 
@@ -487,7 +487,7 @@ from crosstab(
 ------------------------------------------------------
 
 - Now using the above cohort_pivot3 table I will conduct retention on order level
-```
+```sql
 select
     cohort_date,
     orders_1 as ret_orders_1,
