@@ -23,7 +23,7 @@ The Shop’s database consists of 5 tables :
 ## Following are the business questions that Emily wants answers to. 
 - Emily would like to know how many bikes the shop owns by category. 
 ```
-select category, count(*)	as number_of_bikes
+select category, count(*) as number_of_bikes
 	from bike 
 		group by category;
 
