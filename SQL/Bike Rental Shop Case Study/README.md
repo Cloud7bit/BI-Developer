@@ -36,7 +36,7 @@ select category, count(*) as number_of_bikes
 
 - Emily needs a list of customer names with the total number of memberships purchased by each.
 
-```
+```sql
 select c.name , count(m.id) as membership_count
 	from membership m 
 	 right join customer c on m.customer_id=c.id
