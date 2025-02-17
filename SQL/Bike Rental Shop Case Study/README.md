@@ -22,7 +22,7 @@ The Shop’s database consists of 5 tables :
 
 ## Following are the business questions that Emily wants answers to. 
 - Emily would like to know how many bikes the shop owns by category. 
-```
+```sql
 select category, count(*) as number_of_bikes
 	from bike 
 		group by category;
@@ -53,7 +53,7 @@ Electric bikes should have a 10% discount for hourly rentals and a 20% discount 
 50% discount for daily rentals. All other bikes should have a 50% discount for all types of rentals.
 
 
-```
+```sql
 select id,category,price_per_hour as old_price_per_hour,
 	   case when  category = 'electric' then round(price_per_hour - (price_per_hour*0.1) ,2)
 	   		when category = 'mountain bike' then round(price_per_hour - (price_per_hour*0.5) ,2)
@@ -74,7 +74,7 @@ select id,category,price_per_hour as old_price_per_hour,
 - Emily is looking for counts of the rented bikes and of the available bikes in each category.
 
 
-```  
+```sql 
 select category
 	, count(case when status ='available' then 1 end) as available_bikes_count
 	, count(case when status ='rented' then 1 end) as rented_bikes_count
@@ -86,7 +86,7 @@ select category
 
 ------------------------------------------------------ 
 - Emily is preparing a sales report. She needs to know the total revenue from rentals by month, the total by year, and the all-time across all the years. 
-``` 
+```sql 
 select extract(year from start_timestamp) as year
 		, extract(month from start_timestamp) as month
 			, sum(total_paid) as revenue
@@ -102,7 +102,7 @@ select extract(year from start_timestamp) as year
 -  Emily has asked me to get the total revenue from memberships for each combination of year, month, and membership type.
 
 
-```
+```sql
 select extract(year from start_date) as year
 	, extract(month from start_date) as month
 	, mt.name as membership_type_name
@@ -120,7 +120,7 @@ select extract(year from start_date) as year
 - Next, Emily would like data about memberships purchased in 2023, with subtotals and grand totals for all the different combinations of membership types and months
 
 
-```
+```sql
 select mt.name as membership_type_name
 	, extract(month from start_date) as month
 	, sum(total_paid) as total_revenue
@@ -140,7 +140,7 @@ select mt.name as membership_type_name
 Emily wants to segment customers based on the number of rentals and see the count of customers in 
 each segment
 
-```
+```sql
 with cte as (
 	select customer_id,count(*),
 	case when count(*)>10 then 'more than 10' 
