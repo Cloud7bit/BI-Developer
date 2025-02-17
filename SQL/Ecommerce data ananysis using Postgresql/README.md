@@ -53,7 +53,7 @@ In today's database:
 
 ------------------------------------------------------ 
 **Q**: Can you show me the average number of pageview per session?
-```
+```sql
 -- average number of pageview per session
 select
     count(distinct website_session_id) as total_sessions,
@@ -67,7 +67,7 @@ select
 ------------------------------------------------------ 
 
 **Q**: Could you get the most-viewed website pages, ranked by session volume?
-```
+```sql
 select pageview_url,count(distinct website_session_id) as total_pageview
 		from website_pageviews
 			group by pageview_url
@@ -80,7 +80,7 @@ select pageview_url,count(distinct website_session_id) as total_pageview
 ------------------------------------------------------ 
 
 **Q**: Identify the top entry pages and rank them on entry volume 	
-```
+```sql
 with first_pageview as
 (select
 	website_session_id,min(website_pageview_id) as starting_pageview_id
@@ -101,7 +101,7 @@ select
 ------------------------------------------------------ 
 
 **Q**: Gsearch seems to be the biggest driver of our business. Could you pull monthly trends for gsearch sessions and orders so that we can showcase the growth there?
-```
+```sql
 select
     extract(year from w.created_at) as year,
     extract(month from w.created_at) as month,
@@ -128,7 +128,7 @@ The conversion rate has improved as well, rising from around 2.6% during the fir
 
 **Q**: Next, it would be great to see a similar monthly trend for Gsearch, but this time splitting out nonbrand and brand campaigns separately. I am wondering if brand is picking up at all? If so, this is a good story to tell.
 
-```
+```sql
 select
     extract(year from website_sessions.created_at) as year,
     extract(month from website_sessions.created_at) as month,
@@ -153,7 +153,7 @@ select
 
 **Q**: While we are on Gsearch, could you dive into nonbrand, and pull monthly sessions and orders split by device type? I want to flex our analytical muscles a little and show the board we really know our traffic sources.
 
-```
+```sql
 select
 	extract(year from ws.created_at) as year,
     extract(month from ws.created_at) as month,
@@ -180,7 +180,7 @@ select
 
 **Q**:I’m worried that one of our more pessimistic board members may be concerned about the large % of traffic from Gsearch. Can you pull monthly trends for Gsearch, alongside monthly trends for each of our other channels.
 
-```
+```sql
 select
 	distinct utm_source,utm_campaign,http_referer
 		from website_sessions
@@ -219,7 +219,7 @@ select
 ------------------------------------------------------
 
 **Q**: I’d like to tell the story of our website performance improvements over the course of the first 8 months. Could you pull session to order conversion rates, by month?
-```
+```sql
 select
 	extract(year from w.created_at) as year,
     extract(month from w.created_at) as month,
@@ -246,7 +246,7 @@ The website manager conducted an A/B test from June 19 to July 28, comparing a n
 
 Essentially, the goal is to determine which landing page generates more revenue and by how much, quantifying the difference in terms of monthly revenue.
 
-```
+```sql
 select min(website_pageview_id) as first_test_pv
 	from website_pageviews
 		where pageview_url = '/lander-1';
@@ -355,7 +355,7 @@ In terms of monthly performance, this generates about 50 extra orders per month 
 Here, I began by identifying which version of the pages users interacted with and tracking how far they progressed through the conversion funnel.
 
 
-```
+```sql
 drop table if exists session_level_made_it_flagged;
 create temporary table session_level_made_it_flagged as
 select
@@ -429,7 +429,7 @@ The final table shows the percentage of users who clicked through from the landi
 
 The website manager conducted a 50/50 A/B test between a new custom billing page (/billing-2) and the original billing page (/billing) from June 19 to July 28.
 
-```
+```sql
 select
     billing_version_seen,
     count(distinct website_session_id) as sessions,
@@ -492,7 +492,7 @@ There were 1,193 billing sessions in the past month, with a revenue lift of $8.5
 
 **Q**: First, I’d like to show our volume growth. Can you pull overall session and order volume, trended by quarter for the life of the business? Since the most recent quarter is incomplete, you can decide how to handle it.
 
-```
+```sql
 select
     extract(year from ws.created_at) as yr,
     extract(quarter from ws.created_at) as qtr,
@@ -513,7 +513,7 @@ Now, as we wrap up three years of business, the growth has been remarkable. Init
 
 **Q**: Next, let’s showcase all of our efficiency improvements. I would love to show quarterly figures since we launched, for session-to-order conversion rate, revenue per order, and revenue per session.
 
-```
+```sql
 select
     extract(year from website_sessions.created_at) as yr,
     extract(quarter from website_sessions.created_at) as qrt,
@@ -538,7 +538,7 @@ We’ve seen a similar growth story in session-to-order conversion rates, which 
 
 **Q**: I’d like to show how we’ve grown specific channels. Could you pull a quarterly view of orders from Gsearch nonbrand, Bsearch nonbrand, brand search overall, organic search, and direct type-in?
 
-```
+```sql
 select
     extract(year from ws.created_at) as yr,
     extract(quarter from ws.created_at) as qrt,
@@ -562,7 +562,7 @@ One key factor that will excite potential investors is the significant growth in
 
 **Q**: Next, let’s show the overall session-to-order conversion rate trends for those same channels, by quarter. Please also make a note of any periods where we made major improvements or optimizations.
 
-```
+```sql
 select
     extract(year from ws.created_at) as yr,
     extract(quarter from ws.created_at) as qrt,
@@ -593,7 +593,7 @@ What’s especially exciting is that our direct channels: Brand Search, Organic 
 
 **Q**: We’ve come a long way since the days of selling a single product. Let’s pull monthly trending for revenue and margin by product, along with total sales and revenue. Note anything you notice about seasonality.
 
-```
+```sql
 select
     extract(year from created_at) as yr,
     extract(month from created_at) as mo,
@@ -623,7 +623,7 @@ While we anticipate similar year-end trends for the Birthday Bear and Mini Bear,
 
 **Q**:Let’s dive deeper into the impact of introducing new products. Please pull monthly sessions to the /products page, and show how the % of those sessions clicking through another page has changed over time, along with a view of how conversion from /products to placing an order has improved.
 
-```
+```sql
 with products_pageviews as (
     select
         website_session_id,
@@ -668,7 +668,7 @@ These improvements, such as adding products that appeal to a wider audience and 
 
 **Q**:We made our 4th product available as a primary product on December 05, 2014 ( it was previously only a cross-sell item). Could you please pull sales data since then, and show how well each product cross-sells from one another?
 
-```
+```sql
 drop table if exists primary_products;
 create temporary table primary_products as
 select
