@@ -170,8 +170,6 @@ LIMIT 1;
 
 ![Image](https://github.com/user-attachments/assets/505b291f-239f-4923-868e-8d7a9ed29c8a)
 
-
-```
 #### 5. Which nation has participated in all of the olympic games .Problem Statement: SQL query to return the list of countries who have been part of every Olympics games.
 
 ```sql
