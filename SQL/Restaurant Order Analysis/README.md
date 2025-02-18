@@ -1,5 +1,5 @@
 
-# Olympic Games Case Study
+# Restaurant Order analysis
 
 Taste of the World Café has diverse menu offerings and serves a generous amount of portions.
 
