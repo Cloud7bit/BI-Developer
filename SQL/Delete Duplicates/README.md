@@ -1,5 +1,5 @@
 
-# Deleting Duplicate Records Code
+# Code for Deleting Duplicate Records 
 
 ## Scenario 1: Data duplicated based on SOME of the columns
 
