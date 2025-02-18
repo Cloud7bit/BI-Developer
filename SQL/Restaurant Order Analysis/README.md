@@ -7,9 +7,9 @@ Taste of the World Café has diverse menu offerings and serves a generous amount
 
 My objectives are :
 
-1.Explore the menu_items  table to get an idea of what’s on the new menu.
-2.Explore the order_details table to get an idea of the data that’s been collected.
-3.Use both tables to understand how customers are reacting to the new menu.
+- Explore the menu_items  table to get an idea of what’s on the new menu.
+- Explore the order_details table to get an idea of the data that’s been collected.
+- Use both tables to understand how customers are reacting to the new menu.
 
 My job is to use sql to tackle these objectives.
 
