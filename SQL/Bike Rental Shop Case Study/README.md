@@ -37,13 +37,17 @@ select category, count(*) as number_of_bikes
 - Emily needs a list of customer names with the total number of memberships purchased by each.
 
 ```sql
-select c.name , count(m.id) as membership_count
-	from membership m 
-	 right join customer c on m.customer_id=c.id
-	 	group by 1
-		 order by 2 desc;
+SELECT 
+    c.name, COUNT(m.id) AS membership_count
+FROM
+    membership m
+        RIGHT JOIN
+    customer c ON m.customer_id = c.id
+GROUP BY 1
+ORDER BY 2 DESC;
 ```
 **Output:**
+
 ![2](https://github.com/user-attachments/assets/ca84e559-62d1-4a28-9892-2a679a019c11)
 
 ------------------------------------------------------ 
@@ -54,19 +58,35 @@ Electric bikes should have a 10% discount for hourly rentals and a 20% discount 
 
 
 ```sql
-select id,category,price_per_hour as old_price_per_hour,
-	   case when  category = 'electric' then round(price_per_hour - (price_per_hour*0.1) ,2)
-	   		when category = 'mountain bike' then round(price_per_hour - (price_per_hour*0.5) ,2)
-			   else round(price_per_hour - (price_per_hour*0.5) ,2)
-			   	end as new_price_per_hour,
-				   price_per_day as old_price_per_day,
-				   case when  category = 'electric' then round(price_per_day - (price_per_day*0.1) ,2)
-	   					when category = 'mountain bike' then round(price_per_day - (price_per_day*0.5) ,2)
-			   			else round(price_per_day - (price_per_day*0.5) ,2)
-						 end as new_price_per_day  
-						 	from bike;
+SELECT 
+    id,
+    category,
+    price_per_hour AS old_price_per_hour,
+    CASE
+        WHEN
+            category = 'electric'
+        THEN
+            ROUND(price_per_hour - (price_per_hour * 0.1),
+                    2)
+        WHEN
+            category = 'mountain bike'
+        THEN
+            ROUND(price_per_hour - (price_per_hour * 0.5),
+                    2)
+        ELSE ROUND(price_per_hour - (price_per_hour * 0.5),
+                2)
+    END AS new_price_per_hour,
+    price_per_day AS old_price_per_day,
+    CASE
+        WHEN category = 'electric' THEN ROUND(price_per_day - (price_per_day * 0.1), 2)
+        WHEN category = 'mountain bike' THEN ROUND(price_per_day - (price_per_day * 0.5), 2)
+        ELSE ROUND(price_per_day - (price_per_day * 0.5), 2)
+    END AS new_price_per_day
+FROM
+    bike;
 ```            
 **Output:**
+
 ![3](https://github.com/user-attachments/assets/649eab7d-d147-4963-9fa2-6a61c0af7b3d)
 
 ------------------------------------------------------ 
@@ -75,26 +95,36 @@ select id,category,price_per_hour as old_price_per_hour,
 
 
 ```sql 
-select category
-	, count(case when status ='available' then 1 end) as available_bikes_count
-	, count(case when status ='rented' then 1 end) as rented_bikes_count
-		from bike
-			group by category;
+SELECT 
+    category,
+    COUNT(CASE
+        WHEN status = 'available' THEN 1
+    END) AS available_bikes_count,
+    COUNT(CASE
+        WHEN status = 'rented' THEN 1
+    END) AS rented_bikes_count
+FROM
+    bike
+GROUP BY category;
 ```  
 **Output:**
+
 ![4](https://github.com/user-attachments/assets/9f3041d4-c916-4525-9fa0-14cb74eaca95)
 
 ------------------------------------------------------ 
 - Emily is preparing a sales report. She needs to know the total revenue from rentals by month, the total by year, and the all-time across all the years. 
 ```sql 
-select extract(year from start_timestamp) as year
-		, extract(month from start_timestamp) as month
-			, sum(total_paid) as revenue
-				from rental
-					group by grouping sets ( (year, month), (year), () )
-						order by year, month;
+SELECT 
+    EXTRACT(YEAR FROM start_timestamp) AS year,
+    EXTRACT(MONTH FROM start_timestamp) AS month,
+    SUM(total_paid) AS revenue
+FROM
+    rental
+GROUP BY GROUPING SETS ( (year, month) , (year) , () )
+ORDER BY year , month;
 ```
 **Output:**
+
 ![5](https://github.com/user-attachments/assets/96e3ad3a-603f-4a91-bae5-9b6285747d4f)
 
 ------------------------------------------------------ 
@@ -103,16 +133,20 @@ select extract(year from start_timestamp) as year
 
 
 ```sql
-select extract(year from start_date) as year
-	, extract(month from start_date) as month
-	, mt.name as membership_type_name
-	, sum(total_paid) as total_revenue
-		from membership m
-			left join membership_type mt on m.membership_type_id = mt.id
-				group by year, month, mt.name
-					order by year, month, mt.name;
+SELECT 
+    EXTRACT(YEAR FROM start_date) AS year,
+    EXTRACT(MONTH FROM start_date) AS month,
+    mt.name AS membership_type_name,
+    SUM(total_paid) AS total_revenue
+FROM
+    membership m
+        LEFT JOIN
+    membership_type mt ON m.membership_type_id = mt.id
+GROUP BY year , month , mt.name
+ORDER BY year , month , mt.name;
 ```
 **Output:**
+
 ![6](https://github.com/user-attachments/assets/2bcf675b-f7dd-4104-b480-a74bd3d8ddf5)
 
 ------------------------------------------------------ 
@@ -121,15 +155,18 @@ select extract(year from start_date) as year
 
 
 ```sql
-select mt.name as membership_type_name
-	, extract(month from start_date) as month
-	, sum(total_paid) as total_revenue
-		from membership m
-		 join membership_type mt on m.membership_type_id = mt.id
-		  where extract(year from start_date) = 2023
-		   group by cube(membership_type_name, month)
-		    order by membership_type_name, month;
-        
+SELECT 
+    mt.name AS membership_type_name,
+    EXTRACT(MONTH FROM start_date) AS month,
+    SUM(total_paid) AS total_revenue
+FROM
+    membership m
+        JOIN
+    membership_type mt ON m.membership_type_id = mt.id
+WHERE
+    EXTRACT(YEAR FROM start_date) = 2023
+GROUP BY CUBE (membership_type_name , month)
+ORDER BY membership_type_name , month;
 ```
 **Output:**
 
@@ -141,19 +178,24 @@ Emily wants to segment customers based on the number of rentals and see the coun
 each segment
 
 ```sql
-with cte as (
-	select customer_id,count(*),
-	case when count(*)>10 then 'more than 10' 
-		 when count(*) between 5 and 10 then 'between 5 and 10'
-		 else 'fewer than 5' 
-		 end as category
-		 	from rental 
-			 group by customer_id
+WITH cte AS (
+	SELECT 
+		customer_id,COUNT(*),
+		CASE WHEN COUNT(*)>10 THEN 'more than 10' 
+		 WHEN COUNT(*) BETWEEN 5 AND 10 THEN 'between 5 and 10'
+		 ELSE 'fewer than 5' 
+		 END AS category
+	FROM 
+		rental 
+	GROUP BY customer_id
 )
-select category as rental_count_category ,count(*) as customer_count 
-	from cte 
-	  group by category
-	   order by customer_count;
+SELECT 
+	category AS rental_count_category ,
+    COUNT(*) AS customer_count 
+FROM 
+	cte 
+GROUP BY category
+ORDER BY customer_count;
 
 ```
 **Output:**
